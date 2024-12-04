@@ -12,7 +12,7 @@ class Candidats extends Migration
             'id'         => [
                 'type'           => 'INT',
                 'unsigned'       => true,
-                'auto_increment' => true
+                'auto_increment' => true,
             ],
             'nom'        => [
                 'type'       => 'VARCHAR',
@@ -32,16 +32,21 @@ class Candidats extends Migration
             'image'      => [
                 'type'       => 'VARCHAR',
                 'constraint' => '255',
-                'null'       => false,
+                'null'       => true, // Peut être NULL si l'image est optionnelle
             ],
             'dateInscription' => [
                 'type'       => 'DATE',
                 'null'       => false,
             ],
-            'moniteur_id' => [
+            'moniteur_pratique_id' => [
                 'type'       => 'INT',
                 'unsigned'   => true,
-                'null'       => true, 
+                'null'       => true,
+            ],
+            'moniteur_theorique_id' => [
+                'type'       => 'INT',
+                'unsigned'   => true,
+                'null'       => true,
             ],
             'prix' => [
                 'type'       => 'DECIMAL',
@@ -66,10 +71,16 @@ class Candidats extends Migration
                 'null'       => true,
             ],
         ]);
-        
+
+        // Clé primaire
         $this->forge->addKey('id', true);
-    $this->forge->addForeignKey('moniteur_id', 'moniteurs', 'id', 'CASCADE', 'CASCADE');
-    $this->forge->createTable('candidats');
+
+        // Clés étrangères
+        $this->forge->addForeignKey('moniteur_pratique_id', 'moniteurs', 'id', 'CASCADE', 'CASCADE');
+        $this->forge->addForeignKey('moniteur_theorique_id', 'moniteurs', 'id', 'CASCADE', 'CASCADE');
+
+        // Création de la table
+        $this->forge->createTable('candidats');
     }
 
     public function down()
@@ -77,3 +88,4 @@ class Candidats extends Migration
         $this->forge->dropTable('candidats');
     }
 }
+

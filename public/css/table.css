@@ -159,6 +159,7 @@ tbody tr:hover {
     font-size: 20px;
     color: #080808;
 }
+
 .container header{
     position: relative;
     font-size: 20px;
@@ -315,14 +316,16 @@ form .buttons{
 
 .main-card .cards .card {
     position: relative;
-    width: calc(33.33% - 10px); /* Ajustez la largeur pour afficher 3 cartes par ligne */
-    margin: 5px; /* Ajoutez une marge pour espacer les cartes */
+    width: calc(33.33% - 10px); /* Pour afficher 3 cards par ligne */
+    min-width: 250px; /* Largeur minimale pour garantir un affichage correct */
+    margin: 5px;
     background: #fff;
     border-radius: 12px;
     padding: 30px;
     box-shadow: 0 5px 10px rgba(0, 0, 0, 0.25);
     transition: all 0.4s ease;
 }
+
  
   .main-card .cards .card:hover{
     transform: translateY(-15px);
@@ -340,7 +343,7 @@ form .buttons{
     width: 130px;
     border-radius: 50%;
     padding: 3px;
-    background:#1927f0;
+   
     margin-bottom: 14px;
   }
   .card .content .img img{
@@ -420,7 +423,7 @@ form .buttons{
     height: 100px;
     border-radius: 50%;
     margin-bottom: 15px;
-    border: 3px solid #007bff;
+ 
 }
 
 /* Information styles */
@@ -442,4 +445,98 @@ form .buttons{
     top: 10px;  /* Ajuste la distance du bord supérieur de la carte */
     right: 10px;  /* Ajuste la distance du bord droit */
     z-index: 1;  /* S'assure que l'icône est au-dessus des autres éléments */
+}
+.alert {
+    padding: 15px;
+    margin: 10px 0;
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: Arial, sans-serif;
+}
+
+/* Message de succès */
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border: 1px solid #c3e6cb;
+}
+
+/* Message d'erreur */
+.alert-danger {
+    color: #721c24;
+    background-color: #f8d7da;
+    border: 1px solid #f5c6cb;
+}
+
+/* Animation pour rendre les alertes plus dynamiques */
+.alert {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dashboard {
+    display: flex;
+    gap: 20px;
+}
+
+.card {
+    width: 200px;
+    padding: 20px;
+    border-radius: 10px;
+    color: #fff;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+    font-size: 24px;
+    margin: 0;
+}
+
+.card p {
+    margin: 10px 0 20px;
+    font-size: 16px;
+}
+
+.footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+   
+}
+
+.footer .arrow {
+    font-size: 16px;
+}
+
+/* Color themes */
+.card.orange {
+    background-color: #ff865c;
+}
+
+.card.green {
+    background-color: #28c76f;
+}
+
+.card.red {
+    background-color: #ea5455;
+}
+
+.card.blue {
+    background-color: #00cfe8;
+}
+
+.change-text{
+    background-color:white ;
 }

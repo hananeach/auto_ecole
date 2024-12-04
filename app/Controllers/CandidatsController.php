@@ -41,67 +41,65 @@ class CandidatsController extends BaseController {
 }
 
     
-    public function ajouter() {
-        $moniteursModel = new Moniteurs();
+public function ajouter() {
+    $moniteursModel = new Moniteurs();
     
-    // Par exemple, récupérer le premier moniteur pratique disponible
-    $moniteur = $moniteursModel->where('type', 'Pratique')->first();
+    // Récupérer les premiers moniteurs pratique et théorique disponibles
+    $moniteurPratique = $moniteursModel->where('type', 'Pratique')->first(); // Type "Pratique"
+    $moniteurTheorique = $moniteursModel->where('type', 'Théorique')->first(); // Type "Théorique"
     
-    if (!$moniteur) {
-        return redirect()->back()->with('errors', ['Aucun moniteur disponible.']);
+    // Vérifier si les moniteurs existent
+    if (!$moniteurPratique || !$moniteurTheorique) {
+        return redirect()->back()->with('errors', ['Moniteur pratique ou théorique non disponible.']);
     }
-    
-    $moniteur_id = $moniteur['id'];
-        $validation = $this->validate([
-            'nom' => 'required',
-            'cin' => 'required',
-            'tele' => 'required',
-            'image' => 'uploaded[image]|is_image[image]|max_size[image,1024]',
-            'dateInscription' => 'required|valid_date',
-            'prix' => 'required|numeric',       
-            'age' => 'required|integer',       
-            'adresse' => 'required', 
-           
-        ]);
-    
-        if ($validation) {
-            // Récupération des données du formulaire
-            $imageFile = $this->request->getFile('image');
-            if ($imageFile->isValid() && !$imageFile->hasMoved()) {
-                // Définir un nom pour l'image
-                $imageName = $imageFile->getRandomName();
-                // Déplacer l'image dans un dossier (par exemple "uploads/")
-                $imageFile->move(FCPATH . 'uploads', $imageName);
 
-    
-                // Récupération des autres données du formulaire
-                $data = [
-                    'nom' => $this->request->getPost('nom'),
-                    'cin' => $this->request->getPost('cin'),
-                    'tele' => $this->request->getPost('tele'),
-                    'image' => $imageName,  // Le nom de l'image est stocké dans la base de données
-                    'dateInscription' => $this->request->getPost('dateInscription'),
-                    'moniteur_id' => $this->request->getPost('moniteur_id'),
-                    'prix' => $this->request->getPost('prix'),    // Champ prix
-                    'age' => $this->request->getPost('age'),      // Champ âge
-                    'adresse' => $this->request->getPost('adresse'), // Champ adresse
-                    'moniteur_id' => $moniteur_id,
-                ];
-    
-                // Insertion des données dans la base de données
-                $candidatsModel = new Candidats();
-                $candidatsModel->insert($data);
-    
-                return redirect()->to('/Candidats');
-            } else {
-                return redirect()->back()->withInput()->with('errors', ['Erreur lors du téléchargement de l\'image']);
-            }
+    $validation = $this->validate([
+        'nom' => 'required',
+        'cin' => 'required',
+        'tele' => 'required',
+        'image' => 'uploaded[image]|is_image[image]|max_size[image,1024]',
+        'dateInscription' => 'required|valid_date',
+        'prix' => 'required|numeric',       
+        'age' => 'required|integer',       
+        'adresse' => 'required',
+    ]);
+
+    if ($validation) {
+        // Récupérer et traiter l'image
+        $imageFile = $this->request->getFile('image');
+        if ($imageFile->isValid() && !$imageFile->hasMoved()) {
+            // Définir un nom unique pour l'image
+            $imageName = $imageFile->getRandomName();
+            // Déplacer l'image dans un dossier (par exemple "uploads/")
+            $imageFile->move(FCPATH . 'uploads', $imageName);
+
+            // Récupérer les autres données du formulaire
+            $data = [
+                'nom' => $this->request->getPost('nom'),
+                'cin' => $this->request->getPost('cin'),
+                'tele' => $this->request->getPost('tele'),
+                'image' => $imageName, // Stocker le nom de l'image
+                'dateInscription' => $this->request->getPost('dateInscription'),
+                'prix' => $this->request->getPost('prix'),
+                'age' => $this->request->getPost('age'),
+                'adresse' => $this->request->getPost('adresse'),
+                'moniteur_pratique_id' => $moniteurPratique['id'], // Associer au moniteur pratique
+                'moniteur_theorique_id' => $moniteurTheorique['id'], // Associer au moniteur théorique
+            ];
+
+            // Insérer les données dans la base de données
+            $candidatsModel = new Candidats();
+            $candidatsModel->insert($data);
+
+            return redirect()->to('/Candidats')->with('success', 'Candidat ajouté avec succès !');
         } else {
-            // Gérer les erreurs de validation
-            return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
+            return redirect()->back()->withInput()->with('errors', ['Erreur lors du téléchargement de l\'image.']);
         }
+    } else {
+        // Gérer les erreurs de validation
+        return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
     }
-    
+}
 
     public function supprimer($id) {     
         $candidatsModel = new Candidats();     
@@ -116,33 +114,35 @@ class CandidatsController extends BaseController {
         helper('form');
         $candidatsModel = new Candidats();
         $candidat = $candidatsModel->find($id);
-
+    
         if (!$candidat) {
             return redirect()->to('/Candidats')->with('errors', ['Candidat introuvable.']);
         }
-
-        // Récupération des moniteurs pour le formulaire
+    
+        // Récupération des moniteurs pratiques et théoriques pour le formulaire
         $moniteursModel = new Moniteurs();
         $moniteursPratique = $moniteursModel->where('type', 'Pratique')->findAll();
-
+        $moniteursTheorique = $moniteursModel->where('type', 'Théorique')->findAll();
+    
         $data = [
             'candidat' => $candidat,
             'moniteursPratique' => $moniteursPratique,
+            'moniteursTheorique' => $moniteursTheorique,
         ];
-
+    
         return view('modifierCandidat', $data);
     }
-
+    
     public function update($id) {
         $candidatsModel = new Candidats();
         $moniteursModel = new Moniteurs();
-
+    
         // Vérifier si le candidat existe
         $candidat = $candidatsModel->find($id);
         if (!$candidat) {
             return redirect()->to('/Candidats')->with('errors', ['Candidat introuvable.']);
         }
-
+    
         $validation = $this->validate([
             'nom' => 'required',
             'cin' => 'required',
@@ -152,9 +152,10 @@ class CandidatsController extends BaseController {
             'prix' => 'required|numeric',
             'age' => 'required|integer',
             'adresse' => 'required',
-            'moniteur_id' => 'required|integer|is_not_unique[moniteurs.id]'
+            'moniteur_pratique_id' => 'required|integer|is_not_unique[moniteurs.id]',
+            'moniteur_theorique_id' => 'required|integer|is_not_unique[moniteurs.id]'
         ]);
-
+    
         if ($validation) {
             $data = [
                 'nom' => $this->request->getPost('nom'),
@@ -164,39 +165,67 @@ class CandidatsController extends BaseController {
                 'prix' => $this->request->getPost('prix'),
                 'age' => $this->request->getPost('age'),
                 'adresse' => $this->request->getPost('adresse'),
-                'moniteur_id' => $this->request->getPost('moniteur_id')
+                'moniteur_pratique_id' => $this->request->getPost('moniteur_pratique_id'),
+                'moniteur_theorique_id' => $this->request->getPost('moniteur_theorique_id')
             ];
-
+    
             // Gestion de l'image
             $imageFile = $this->request->getFile('image');
             if ($imageFile && $imageFile->isValid() && !$imageFile->hasMoved()) {
                 $imageName = $imageFile->getRandomName();
                 $imageFile->move(FCPATH . 'uploads', $imageName);
                 $data['image'] = $imageName;
-
+    
                 // Supprimer l'ancienne image si elle existe
                 if (!empty($candidat['image']) && file_exists(FCPATH . 'uploads/' . $candidat['image'])) {
                     unlink(FCPATH . 'uploads/' . $candidat['image']);
                 }
             }
-
+    
             // Mise à jour des données dans la base
             $candidatsModel->update($id, $data);
-
+    
             return redirect()->to('/Candidats')->with('success', 'Candidat modifié avec succès.');
         } else {
             // Gestion des erreurs de validation
             return redirect()->back()->withInput()->with('errors', $this->validator->getErrors());
-}
+        }
     }
-    public function getCandidatDetails($id) {
+    
+    public function getCandidatDetails($id)
+    {
         $candidatsModel = new Candidats();
+        $moniteursModel = new Moniteurs();
+    
+        // Récupérer le candidat
         $candidat = $candidatsModel->find($id);
     
         if ($candidat) {
-            return $this->response->setJSON($candidat); // Retourner les données au format JSON
-        }
+            // Récupérer les moniteurs associés (pratique et théorique)
+            $moniteurPratique = $moniteursModel->find($candidat['moniteur_pratique_id']);
+            $moniteurTheorique = $moniteursModel->find($candidat['moniteur_theorique_id']);
     
-        return $this->response->setJSON([]); // Retourner un tableau vide si le candidat n'existe pas
+            // Préparer les données à renvoyer au format JSON
+            $data = [
+                'id' => $candidat['id'],
+                'nom' => $candidat['nom'],
+                'cin' => $candidat['cin'],
+                'tele' => $candidat['tele'],
+                'image' => $candidat['image'],
+                'dateInscription' => $candidat['dateInscription'],
+                'prix' => $candidat['prix'],
+                'age' => $candidat['age'],
+                'adresse' => $candidat['adresse'],
+                'moniteur_pratique_nom' => $moniteurPratique ? $moniteurPratique['nom'] : null,
+                'moniteur_theorique_nom' => $moniteurTheorique ? $moniteurTheorique['nom'] : null,
+            ];
+    
+            // Retourner les données en JSON
+            return $this->response->setJSON($data);
+        } else {
+            // Candidat non trouvé
+            return $this->response->setJSON(['error' => 'Candidat non trouvé']);
+        }
     }
+    
 }

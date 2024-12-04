@@ -1,183 +1,202 @@
 <?php $this->extend('layouts/admin'); ?>
 
 <?php $this->section('dashboard_content'); ?>
-<main class="table" id="customers_table">
-    <section class="table__header">
-        <h1>Ajouter un Moniteur</h1>
-        
-        <!-- Formulaire Ajouter Moniteur en haut de la page -->
-        <div class="add-moniteur-form">
-            <form action="/Moniteurs" method="post" class="form-inline">
-                <label for="nom">Nom:</label>
-                <input type="text" id="nom" name="nom" required>
 
-                <label for="cin">CIN:</label>
-                <input type="text" id="cin" name="cin" required>
 
-                <label for="tele">Téléphone:</label>
-                <input type="text" id="tele" name="tele" required>
 
-                <label for="type">Type:</label>
-                <select id="type" name="type" required>
-                    <option value="Pratique">Pratique</option>
-                    <option value="Théorique">Théorique</option>
-                </select>
 
-                <label for="dateCAP">Date C.A.P:</label>
-                <input type="date" id="dateCAP" name="dateCAP" required>
+<main class="table">
+<button class="nextBtn" id="ajouterMoniteur"> <span class="btnText">Ajouter un moniteur</span>  </button>
+<br><br>
+            <section class="table__header">
+              
+                <!-- <div class="input-group">
+                    <input type="search" placeholder="rechercher un candidature...">
+                    <img src="images/search.png" alt="">
+                </div> -->
+               
+                    <div class="export__file-options">
+                        <label><strong>Exporter sous &nbsp; &#10140;</strong></label>
+                        <label for="export-file" id="toPDF">PDF <img src="uploads/pdf.png" alt=""  width="25px; height:25px;"></label>
+                  
+                </div>
+            </section>
 
-                <label for="numCAP">Numéro C.A.P:</label>
-                <input type="number" id="numCAP" name="numCAP" required>
-
-                <button type="submit" class="submit-btn">Ajouter</button>
-            </form>
-        </div>
-        
-        <!-- Champ de recherche -->
-        <div class="input-group">
-            <input type="search" placeholder="Rechercher..." />
-            <img src="images/search.png" alt="search icon">
-        </div>
-    </section>
-
-    <!-- Tableau des moniteurs -->
-    <section class="table__body">
-        <table>
-            <thead>
-                <tr>
-                    <th>NOM <span class="icon-arrow">&UpArrow;</span></th>
-                    <th>CIN <span class="icon-arrow">&UpArrow;</span></th>
-                    <th>Télé <span class="icon-arrow">&UpArrow;</span></th>
-                    <th>Type <span class="icon-arrow">&UpArrow;</span></th>
-                    <th>Date C.A.P <span class="icon-arrow">&UpArrow;</span></th>
-                    <th>Numéro C.A.P <span class="icon-arrow">&UpArrow;</span></th>
-                    <th>Action <span class="icon-arrow">&UpArrow;</span></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($moniteurs as $moniteur): ?>
-                    <tr>
-                        <td><?= esc($moniteur['nom']) ?></td>
-                        <td><?= esc($moniteur['cin']) ?></td>
-                        <td><?= esc($moniteur['tele']) ?></td>
-                        <td><?= esc($moniteur['type']) ?></td>
-                        <td><?= esc($moniteur['dateCAP']) ?></td>
-                        <td><?= esc($moniteur['numCAP']) ?></td>
+            <section class="table__body"  id="customers_table">
+                <table>
+                    <thead>
+                        <tr>
+                        <th>NOM</th>
+                        <th>CIN </th>
+                        <th>Télé </th>
+                        <th>Type </th>
+                        <th>Date C.A.P </th>
+                        <th>Numéro C.A.P </th>
+                        <th>Action </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach ($moniteurs as $moniteur): ?>
+                        <tr>
+                            <td><?= esc($moniteur['nom']) ?></td>
+                            <td><?= esc($moniteur['cin']) ?></td>
+                            <td><?= esc($moniteur['tele']) ?></td>
+                            <td><?= esc($moniteur['type']) ?></td>
+                            <td><?= esc($moniteur['dateCAP']) ?></td>
+                            <td><?= esc($moniteur['numCAP']) ?></td>
+                            </td>
+                    
                         <td>
-                            <a href="<?= base_url('Moniteurs/modifier/'.$moniteur['id']) ?>" class="material-symbols-outlined">
-                                <span class="material-symbols-outlined">edit</span>
-                            </a>
-                            <a href="<?= base_url('Moniteurs/supprimer/'.$moniteur['id']) ?>" 
-                               class="material-symbols-outlined" 
-                               onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce moniteur ?');">
-                                <span class="material-symbols-outlined">delete</span>
-                            </a>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </section>
+                                <a href="<?= base_url('Moniteurs/modifier/'.$moniteur['id']) ?>" class="material-symbols-outlined">
+                                    <span class="material-symbols-outlined">edit</span>
+                                </a>
+                                <a href="<?= base_url('Moniteurs/supprimer/'.$moniteur['id']) ?>" 
+                                class="material-symbols-outlined" 
+                                onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce moniteur ?');">
+                                    <span class="material-symbols-outlined">delete</span>
+                                </a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
 
-    <?php if (session()->getFlashdata('success')): ?>
-        <div class="alert alert-success">
-            <?= session()->getFlashdata('success') ?>
-        </div>
-    <?php endif; ?>
+            </section>
 
-    <?php if (session()->getFlashdata('errors')): ?>
-        <div class="alert alert-danger">
-            <?= implode('<br>', session()->getFlashdata('errors')) ?>
-        </div>
-    <?php endif; ?>
 </main>
+<section class="container" id="candidats_table" style="display: none;">
+    <span class="close-btn" id="closeModal">&times;</span>
+    <h1>Ajouter un Moniteur</h1>
+    
+        <form action="/Moniteurs" method="post" class="form">
+            <div class="details personal">
+                <div class="fields">
+                    <div class="input-field">
+                        <label for="nom">Nom:</label>
+                        <input type="text" id="nom" name="nom" required>
+                    </div>
 
-<style>
-/* Style des labels du formulaire */
-.add-moniteur-form label {
-    font-weight: bold;
-    font-size: 0.9rem;
-    color: #333;
-    margin-right: 0.5rem;
-}
+                    <div class="input-field">
+                        <label for="cin">CIN:</label>
+                        <input type="text" id="cin" name="cin" required>
+                    </div>
 
-/* Style des champs d'entrée du formulaire */
-.add-moniteur-form input[type="text"],
-.add-moniteur-form input[type="date"],
-.add-moniteur-form input[type="number"] {
-    width: 155px;
-    padding: 0.6rem;
-    border-radius: 0.3rem;
-    border: 1px solid #ddd;
-    transition: border-color 0.2s ease-in-out;
-}
+                    <div class="input-field">
+                        <label for="tele">Téléphone:</label>
+                        <input type="text" id="tele" name="tele" required>
+                    </div>
 
-/* Effet focus pour les champs d'entrée */
-.add-moniteur-form input[type="text"]:focus,
-.add-moniteur-form input[type="date"]:focus,
-.add-moniteur-form input[type="number"]:focus {
-    border-color: deepskyblue;
-    outline: none;
-}
+                    <div class="input-field">
+                        <label for="type">Type:</label>
+                        <select id="type" name="type" required>
+                            <option value="Pratique">Pratique</option>
+                            <option value="Théorique">Théorique</option>
+                        </select>
+                    </div>
 
-/* Bouton de soumission */
-.add-moniteur-form .submit-btn {
-    background-color: deepskyblue;
-    color: white;
-    padding: 0.7rem 1.2rem;
-    border: none;
-    border-radius: 0.3rem;
-    cursor: pointer;
-    font-weight: bold;
-    transition: background-color 0.2s ease-in-out;
-}
+                    <div class="input-field">
+                        <label for="dateCAP">Date C.A.P:</label>
+                        <input type="date" id="dateCAP" name="dateCAP" required>
+                    </div>
 
-.add-moniteur-form .submit-btn:hover {
-    background-color: #5a00a3;
-}
+                    <div class="input-field">
+                        <label for="numCAP">Numéro C.A.P:</label>
+                        <input type="number" id="numCAP" name="numCAP" required>
+                    </div>
+                </div>
+            </div>
 
-/* Style de la table */
-.table__body tbody tr {
-    transition: background-color 0.2s;
-}
-
-.table__body tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-
-/* Cache les lignes avec la classe hide */
-.hide {
-    display: none;
-}
-</style>
-
-<link rel="stylesheet" href="/css/table.css">
-
-
-<script src="script.js"></script>
+            <button type="submit" class="nextBtn">
+                    <span class="btnText">Ajouter</span>
+                </button>
+        </form>
+  
+</section>
 <script>
-const searchInput = document.querySelector('.input-group input');
-const tableRows = document.querySelectorAll('tbody tr');
+document.addEventListener('DOMContentLoaded', function() {
+        const ajouterCandidatLink = document.getElementById('ajouterMoniteur');
+        const candidatsTable = document.getElementById('candidats_table');
+        const closeModal = document.getElementById('closeModal');
 
-// Fonction de recherche dans le tableau
-function searchTable() {
-    const searchData = searchInput.value.toLowerCase();
+        // Afficher le formulaire lorsque le lien est cliqué
+        ajouterCandidatLink.addEventListener('click', (e) => {
+            e.preventDefault(); // Empêche le comportement par défaut du lien
+            candidatsTable.style.display = 'block'; // Affiche le formulaire
+        });
 
-    tableRows.forEach((row, i) => {
-        const rowData = row.textContent.toLowerCase();
-        const matches = rowData.includes(searchData);
+        // Fermer le formulaire lorsque le bouton de fermeture est cliqué
+        closeModal.addEventListener('click', () => {
+            candidatsTable.style.display = 'none'; // Cache le formulaire
+        });
 
-        // Ajoute ou retire la classe hide en fonction des correspondances
-        row.classList.toggle('hide', !matches);
-
-        // Alterne la couleur de fond pour les lignes visibles
-        if (matches) {
-            row.style.backgroundColor = (i % 2 === 0) ? 'transparent' : '#f3f3f3';
-        }
+        // (Optionnel) Fermer le formulaire en cliquant en dehors de celui-ci
+        window.addEventListener('click', (e) => {
+            if (e.target === candidatsTable) {
+                candidatsTable.style.display = 'none';
+            }
+        });
     });
-}
+// 3. Converting HTML table to PDF
 
-// Ajout de l'événement input pour déclencher la recherche
-searchInput.addEventListener('input', searchTable);
+    const pdf_btn = document.querySelector('#toPDF');
+        const customers_table = document.querySelector('#customers_table');
+
+        const toPDF = function(customers_table) {
+    // Cloner le tableau pour ne pas modifier l'original
+    const cloned_table = customers_table.cloneNode(true);
+
+    // Supprimer la colonne "Action" (Modifier/Supprimer) du tableau cloné
+    cloned_table.querySelectorAll('thead th:last-child, tbody tr td:last-child').forEach(el => el.remove());
+
+    // Générer le contenu HTML pour le PDF
+    const html_code = `
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/css/moniteurPdf.css">
+    </head>
+    <body>
+        <main class="table">${cloned_table.innerHTML}</main>
+    </body>
+    </html>`;
+
+    // Ouvrir une nouvelle fenêtre et imprimer
+    const new_window = window.open();
+    new_window.document.write(html_code);
+
+    setTimeout(() => {
+        new_window.print();
+        new_window.close();
+    }, 400);
+};
+
+pdf_btn.onclick = () => {
+    toPDF(customers_table);
+};
+
+const search = document.querySelector('.input-group input'),
+            table_rows = document.querySelectorAll('tbody tr'),
+            table_headings = document.querySelectorAll('thead th');
+
+        // 1. Searching for specific data of HTML table
+        search.addEventListener('input', searchTable);
+
+        function searchTable() {
+            table_rows.forEach((row, i) => {
+                let table_data = row.textContent.toLowerCase(),
+                    search_data = search.value.toLowerCase();
+
+                row.classList.toggle('hide', table_data.indexOf(search_data) < 0);
+                row.style.setProperty('--delay', i / 25 + 's');
+            })
+
+            document.querySelectorAll('tbody tr:not(.hide)').forEach((visible_row, i) => {
+                visible_row.style.backgroundColor = (i % 2 == 0) ? 'transparent' : '#0000000b';
+            });
+        }
+
+
 </script>
-<?php $this->endSection();?>
+
+
+<?php $this->endSection(); ?>

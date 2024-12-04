@@ -6,7 +6,7 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
-$routes->get('/Dashboard', 'Home::Dashboard');
+$routes->get('/Dashboard', 'DashboardController::index');
 $routes->get('/Vehicules', 'Home::Vehicules');
 $routes->get('/Candidats', 'CandidatsController::index');
 $routes->get('/Moniteurs', 'MoniteursController::index');
@@ -27,3 +27,15 @@ $routes->post('Candidats/update/(:num)', 'CandidatsController::update/$1');
 $routes->get('Candidats/modifier/(:num)', 'CandidatsController::modifier/$1');
 $routes->get('Candidats/getCandidatDetails/(:num)', 'CandidatsController::getCandidatDetails/$1');
 
+$routes->get('/Vehicules', 'VehiculesController::index', ['as' => 'vehicules.index']);
+$routes->post('/Vehicules/ajouter', 'VehiculesController::ajouter', ['as' => 'vehicules.ajouter']);
+$routes->get('/Vehicules/supprimer/(:num)', 'VehiculesController::supprimer/$1');
+$routes->get('Vehicules/modifier/(:num)', 'VehiculesController::modifier/$1');
+$routes->post('/Vehicules/update/(:num)', 'VehiculesController::update/$1');
+
+/////rendez vous
+$routes->get('/RendezVous', 'RendezvousController::index');
+$routes->post('/RendezVous', 'RendezvousController::ajouter');
+// $routes->get('/RendezvousController/getUnavailableDates', 'RendezvousController::getUnavailableDates');
+
+$routes->get('/rendezvous', 'RendezvousController::getUnavailableDates');

@@ -6,28 +6,19 @@ use CodeIgniter\Model;
 
 class Candidats extends Model
 {
-    protected $table      = 'candidats';
-    protected $primaryKey = 'id';
-    protected $allowedFields = ['nom', 'cin', 'tele', 'image', 'dateInscription', 'moniteur_id', 'prix', 'age', 'adresse'];
+    protected $table = 'candidats'; // Nom de votre table
+    protected $primaryKey = 'id';   // Clé primaire de la table
+    protected $allowedFields = ['nom', 'adresse', 'dateInscription', 'prix', 'tele', 'cin', 'age', 'image', 'moniteur_pratique_id', 'moniteur_theorique_id']; // Champs autorisés
 
-
-    // Relation avec Moniteur (si le moniteur est une table liée)
-    public function getMoniteur()
-    {
-        return $this->belongsTo('App\Models\Moniteurs', 'moniteur_id', 'id');
-    }
-
+    // Définir la méthode getCandidatsWithMoniteurs
     public function getCandidatsWithMoniteurs()
     {
-        return $this->select('candidats.*, 
-                              moniteurs.nom as moniteur_nom, 
-                              moniteurs.type as moniteur_type, 
-                              moniteurs.dateCAP as moniteur_dateCAP, 
-                              moniteurs.numCAP as moniteur_numCAP')
-                    ->join('moniteurs', 'candidats.moniteur_id = moniteurs.id', 'left')
+        return $this->select('candidats.*, moniteurs_pratique.nom as nom_pratique, moniteurs_pratique.dateCAP as dateCAP_pratique, moniteurs_pratique.numCAP as numCAP_pratique, moniteurs_theorique.nom as nom_theorique, moniteurs_theorique.dateCAP as dateCAP_theorique, moniteurs_theorique.numCAP as numCAP_theorique')
+                    ->join('moniteurs moniteurs_pratique', 'moniteurs_pratique.id = candidats.moniteur_pratique_id', 'left')
+                    ->join('moniteurs moniteurs_theorique', 'moniteurs_theorique.id = candidats.moniteur_theorique_id', 'left')
                     ->findAll();
     }
-    
-
 }
+
+
 

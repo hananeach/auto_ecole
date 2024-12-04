@@ -2,12 +2,12 @@
 
 <?php $this->section('dashboard_content'); ?>
 <button class="nextBtn" id="ajouterCandidat"> <span class="btnText">Ajouter un candidat</span>  </button>
-                               
-                          
+
+
+                            
 <div class="formulaire">
     <div class="main-card">
         <div class="cards">
-        <?php foreach ($moniteursPratique as $moniteur): ?>
             <?php foreach ($candidats as $candidat): ?>
                 <div class="card">
                     <div class="content">
@@ -18,13 +18,9 @@
                             <img src="<?= base_url('uploads/' . esc($candidat['image'])) ?>" alt="Image">
                         </div>
                         <div class="details">
-                            <div class="name"><?= esc($candidat['nom']) ?></div>
+                        <div class="name"><?= esc($candidat['nom']) ?></div>
                             <div class="job"><?= esc($candidat['cin']) ?></div>
                             <div class="name"><?= esc($candidat['dateInscription']) ?></div>
-                            <div class="job">Moniteur pratique : <?= esc($candidat['moniteur_pratique_nom'] ?? 'Non assigné') ?></div>
-                            <div class="job">Moniteur théorique : <?= esc($candidat['moniteur_theorique_nom'] ?? 'Non assigné') ?></div>
-                        </div>
-
                         </div>
                        
                         <div class="icon-container">
@@ -38,132 +34,122 @@
                     </div>
                 </div>
             <?php endforeach; ?>
-            <?php endforeach; ?>
         </div>
     </div>
 </div>
-    <div id="modal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <div id="candidat-details">
 
+<div id="modal" class="modal" style="display: none;">
+
+    <div class="modal-content">
+    <span id="closeModal">&times;</span>
+        <div id="candidat-details"></div>
+    </div>
+</div>
+
+<div class="container" id="candidats_table" style="display: none;">
+    <span class="close-btn" id="closeModal">&times;</span>
+    <header>Ajouter un Candidat</header>
+    <form action="/CandidatsA" method="post" enctype="multipart/form-data">
+        <div class="form first">
+            <div class="details personal">
+                <div class="fields">
+                    <div class="input-field">
+                        <label>Nom complet:</label>
+                        <input type="text" placeholder="Entrer ton nom ici.." id="nom" name="nom" required value="<?= old('nom') ?>">
+                    </div>
+                    <div class="input-field">
+                        <label for="adresse">Adresse:</label>
+                        <input type="text" placeholder="Entrer ton adresse ici.." id="adresse" name="adresse" required value="<?= old('adresse') ?>">
+                    </div>
+                    <div class="input-field">
+                        <label>Date d'inscription:</label>
+                        <input type="date" placeholder="Entrez la date de votre inscription" id="dateInscription" name="dateInscription" required value="<?= old('dateInscription') ?>">
+                    </div>
+                    <div class="input-field">
+                        <label>Prix en DH:</label>
+                        <input type="text" placeholder="Entrez le prix" id="prix" name="prix" required value="<?= old('prix') ?>">
+                    </div>
+                    <div class="input-field">
+                        <label>Téléphone:</label>
+                        <input type="number" placeholder="Entrez votre numéro de téléphone" id="tele" name="tele" required value="<?= old('tele') ?>">
+                    </div>
+                    <div class="input-field">
+                        <label>CIN:</label>
+                        <input type="text" placeholder="Entrez votre CIN" id="cin" name="cin" required value="<?= old('cin') ?>">
+                    </div>
+                    <div class="input-field">
+                        <label>Age:</label>
+                        <input type="number" placeholder="Entrez votre age" id="age" name="age" required value="<?= old('age') ?>">
+                    </div>
+
+                    <div class="input-field">
+                        <label>Votre image:</label>
+                        <input type="file" placeholder="Entrez votre image.." id="image" name="image" required>
+                    </div>
+
+                    <div class="input-field">
+                        <select id="moniteur_pratique" name="moniteur_id_pratique" required>
+                            <option disabled selected>Sélectionnez un moniteur pratique :</option>
+                            <?php foreach ($moniteursPratique as $moniteur): ?>
+                                <option value="<?= esc($moniteur['id']) ?>"
+                                    <?= old('moniteur_id_pratique') == $moniteur['id'] ? 'selected' : '' ?>>
+                                    <?= esc($moniteur['nom']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+
+                        <select id="moniteur_theorique" name="moniteur_id_theorique" required>
+                            <option disabled selected>Sélectionnez un moniteur théorique :</option>
+                            <?php foreach ($moniteursTheorique as $moniteur): ?>
+                                <option value="<?= esc($moniteur['id']) ?>"
+                                    <?= old('moniteur_id_theorique') == $moniteur['id'] ? 'selected' : '' ?>>
+                                    <?= esc($moniteur['nom']) ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="details ID">
+                <span class="title">Informations de moniteurs:</span>
+                <div class="fields" id="moniteur_pratique_info">
+                    <div class="input-field">
+                        <label for="nom_moniteur_pratique">Nom :</label>
+                        <input type="text" id="nom_moniteur_pratique" readonly value="<?= old('moniteur_pratique_nom') ?>">
+                    </div>
+                    <div class="input-field">
+                        <label for="dateCAP_pratique">Date CAP :</label>
+                        <input type="text" id="dateCAP_pratique" readonly value="<?= old('moniteur_pratique_dateCAP') ?>">
+                    </div>
+                    <div class="input-field">
+                        <label for="numCAP_pratique">Numéro CAP :</label>
+                        <input type="text" id="numCAP_pratique" readonly value="<?= old('moniteur_pratique_numCAP') ?>">
+                    </div>
+                </div>
+
+                <div class="fields" id="moniteur_theorique_info">
+                    <div class="input-field">
+                        <label for="nom_moniteur_theorique">Nom :</label>
+                        <input type="text" id="nom_moniteur_theorique" readonly value="<?= old('moniteur_theorique_nom') ?>">
+                    </div>
+                    <div class="input-field">
+                        <label for="dateCAP_theorique">Date CAP :</label>
+                        <input type="text" id="dateCAP_theorique" readonly value="<?= old('moniteur_theorique_dateCAP') ?>">
+                    </div>
+                    <div class="input-field">
+                        <label for="numCAP_theorique">Numéro CAP :</label>
+                        <input type="text" id="numCAP_theorique" readonly value="<?= old('moniteur_theorique_numCAP') ?>">
+                    </div>
+                </div>
+
+                <button type="submit" class="nextBtn">
+                    <span class="btnText">Ajouter</span>
+                </button>
             </div>
         </div>
-    </div>
-
-    <div class="container" id="candidats_table" style="display: none;">
-        <span class="close-btn" id="closeModal">&times;</span>
-        <header>Ajouter un Candidat</header>
-        <form action="/CandidatsA" method="post" enctype="multipart/form-data">
-            <div class="form first">
-                <div class="details personal">
-                    <div class="fields">
-                        <div class="input-field">
-                            <label>Nom complet:</label>
-                            <input type="text" placeholder="Entrer ton nom ici.." id="nom" name="nom" required>
-                        </div>
-                        <div class="input-field">
-                            <label for="adresse">Adresse:</label>
-                            <input type="text" placeholder="Entrer ton adresse ici.." id="adresse" name="adresse" required>
-                        </div>
-                        <div class="input-field">
-                            <label>Date d'inscription:</label>
-                            <input type="date" placeholder="Entrez la date de votre inscription" id="dateInscription" name="dateInscription" required>
-                        </div>
-                        <div class="input-field">
-                            <label>Prix en DH:</label>
-                            <input type="text" placeholder="Entrez le prix" id="prix" name="prix" required>
-                        </div>
-                        <div class="input-field">
-                            <label>Téléphone:</label>
-                            <input type="number" placeholder="Entrez votre numéro de téléphone" id="tele" name="tele" required>
-                        </div>
-
-                        <div class="input-field">
-                            <label>CIN:</label>
-                            <input type="text" placeholder="Entrez votre CIN" id="cin" name="cin" required>
-                        </div>
-                        <div class="input-field">
-                            <label>Age:</label>
-                            <input type="number" placeholder="Entrez votre age" id="age" name="age" required>
-                        </div>
-
-                        <div class="input-field">
-                            <label>Votre image:</label>
-                            <input type="file" placeholder="Entrez votre image.." id="image" name="image" required>
-                        </div>
-                        <div class="input-field">
-                            <!-- <label>Séléction de moniteur:</label> -->
-                            <select id="moniteur_pratique" name="moniteur_id_pratique" required>
-                                <option disabled selected>Sélectionnez un moniteur pratique :</option>
-                                <?php foreach ($moniteursPratique as $moniteur): ?>
-                                    <option value="<?= esc($moniteur['id']) ?>"
-                                        <?= (isset($candidat['moniteur_id']) && $candidat['moniteur_id'] == $moniteur['id']) ? 'selected' : '' ?>>
-                                        <?= esc($moniteur['nom']) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-
-
-
-                            <select id="moniteur_theorique" name="moniteur_id_theorique" required>
-                                <option disabled selected>Sélectionnez un moniteur théorique :</option>
-                                <?php foreach ($moniteursTheorique as $moniteur): ?>
-                                    <option value="<?= esc($moniteur['id']) ?>"
-                                        <?= (isset($candidat['moniteur_id']) && $candidat['moniteur_id'] == $moniteur['id']) ? 'selected' : '' ?>>
-                                        <?= esc($moniteur['nom']) ?>
-                                    </option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                    </div>
-                </div>
-                <div class="details ID">
-                    <span class="title">Informations de moniteurs:</span>
-                    <div class="fields" id="moniteur_pratique_info">
-
-                        <div class="input-field">
-                            <label for="nom_moniteur_pratique">Nom :</label>
-                            <input type="text" id="nom_moniteur_pratique" value="<?= esc($moniteur['nom'] ?? '') ?>" readonly>
-                        </div>
-
-                        <div class="input-field">
-                            <label for="dateCAP_pratique">Date CAP :</label>
-                            <input type="text" id="dateCAP_pratique" value="<?= esc($moniteur['dateCAP'] ?? '') ?>" readonly>
-                        </div>
-
-                        <div class="input-field">
-                            <label for="numCAP_pratique">Numéro CAP :</label>
-                            <input type="text" id="numCAP_pratique" value="<?= esc($moniteur['numCAP'] ?? '') ?>" readonly>
-                        </div>
-
-                    </div>
-
-                    <div class="fields" id="moniteur_theorique_info">
-                        <div class="input-field">
-                            <label for="nom_moniteur_theorique">Nom :</label>
-                            <input type="text" id="nom_moniteur_theorique" value="<?= esc($moniteur['nom'] ?? '') ?>" readonly>
-                        </div>
-
-                        <div class="input-field">
-                            <label for="dateCAP_theorique">Date CAP :</label>
-                            <input type="text" id="dateCAP_theorique" value="<?= esc($moniteur['dateCAP'] ?? '') ?>" readonly>
-                        </div>
-
-                        <div class="input-field">
-                            <label for="numCAP_theorique">Numéro CAP :</label>
-                            <input type="text" id="numCAP_theorique" value="<?= esc($moniteur['numCAP'] ?? '') ?>" readonly>
-                        </div>
-                    </div>
-                 
-
-                    <button type="submit" class="nextBtn">
-                        <span class="btnText">Ajouter</span></button>
-
-                </div>
-            </div>
-
-        </form>
-    </div>
+    </form>
+</div>
 
     <script>
      const ajouterCandidatLink = document.getElementById('ajouterCandidat');
@@ -251,57 +237,50 @@
         });
 
         function showDetails(candidatId) {
-            // Effectuer une requête AJAX pour récupérer les détails du candidat
-            fetch('<?= base_url('Candidats/getCandidatDetails/') ?>' + candidatId)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('erreur');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data && Object.keys(data).length > 0) {
-                        // Afficher les détails dans la div
-                        document.getElementById('candidat-details').innerHTML = `
-                     <img src="<?= base_url('uploads/') ?>${data.image}" alt="Image du candidat" class="popup-image">
-                       <div class="popup-info">
-                    <div  class="job"> <strong >Nom:</strong> ${data.nom}</div>
-                    <div class="job"> <strong >CIN:</strong> ${data.cin}</div>
-                    <div class="job"> <strong>Date d'inscription:</strong> ${data.dateInscription}</div>
-                    <div class="job"> <strong>Téléphone:</strong> ${data.tele}</div>
-                    <div class="job"> <strong>Prix:</strong> ${data.prix}</div>
-                    <div class="job"> <strong>Age:</strong> ${data.age}</div>
-                    <div class="job"> <strong>Adresse:</strong> ${data.adresse}</div>
+    // Effectuer une requête AJAX pour récupérer les détails du candidat
+    fetch('<?= base_url('Candidats/getCandidatDetails/') ?>' + candidatId)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Erreur lors de la récupération des données');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data && !data.error) {
+                // Afficher les détails dans la div
+                document.getElementById('candidat-details').innerHTML = `
+                    <img src="<?= base_url('uploads/') ?>${data.image}" alt="Image du candidat" class="popup-image">
+                    <div class="popup-info">
+                        <div class="job"><strong>Nom:</strong> ${data.nom}</div>
+                        <div class="job"><strong>CIN:</strong> ${data.cin}</div>
+                        <div class="job"><strong>Date d'inscription:</strong> ${data.dateInscription}</div>
+                        <div class="job"><strong>Téléphone:</strong> ${data.tele}</div>
+                        <div class="job"><strong>Prix:</strong> ${data.prix}</div>
+                        <div class="job"><strong>Age:</strong> ${data.age}</div>
+                        <div class="job"><strong>Adresse:</strong> ${data.adresse}</div>
+                        <div class="job"><strong>Moniteur Pratique:</strong> ${data.moniteur_pratique_nom || 'Non disponible'}</div>
+                        <div class="job"><strong>Moniteur Théorique:</strong> ${data.moniteur_theorique_nom || 'Non disponible'}</div>
                     </div>
                 `;
-                        // Afficher la boîte modale
-                        document.getElementById('modal').style.display = "block";
-                    } else {
-                        document.getElementById('candidat-details').innerHTML = '<div>Aucun détail trouvé.</div>';
-                    }
-                })
-                .catch(error => {
-                    console.error('Erreur:', error);
-                    document.getElementById('candidat-details').innerHTML = '<div>Erreur lors de la récupération des détails.</div>';
-                });
-
-            window.onclick = function(event) {
-                const modal = document.getElementById('modal');
-                if (event.target == modal) {
-                    modal.style.display = "none";
-                }
+                // Afficher la boîte modale
+                document.getElementById('modal').style.display = "block";
+            } else {
+                document.getElementById('candidat-details').innerHTML = '<div>Aucun détail trouvé.</div>';
             }
+        })
+        .catch(error => {
+            console.error('Erreur:', error);
+            document.getElementById('candidat-details').innerHTML = '<div>Erreur lors de la récupération des détails.</div>';
+        });
+        document.getElementById('closeModal').onclick = function() {
+        document.getElementById('modal').style.display = "none";
+    }
+    window.onclick = function(event) {
+        const modal = document.getElementById('modal');
+        if (event.target == modal) {
+            modal.style.display = "none";
         }
-    </script>
-    <?php if (session()->getFlashdata('success')): ?>
-        <div class="alert alert-success">
-            <?= session()->getFlashdata('success') ?>
-        </div>
-    <?php endif; ?>
-    <?php if (session()->getFlashdata('errors')): ?>
-        <div class="alert alert-danger">
-            <?= implode('<br>', session()->getFlashdata('errors')) ?>
-        </div>
-    <?php endif; ?>
+    }
+} </script>
    
     <?php $this->endSection(); ?>

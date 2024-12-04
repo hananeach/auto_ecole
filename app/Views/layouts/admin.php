@@ -19,7 +19,7 @@
 		</a>
 		<ul class="side-menu top">
 			<li class="active">
-				<a href="#">
+				<a href="/Dashboard">
 					<i class='bx bxs-dashboard' ></i>
 					<span class="text">Dashboard</span>
 				</a>
@@ -63,10 +63,11 @@
 				</a>
 			</li>
 		</ul>
+	
 	</section>
 	<!-- SIDEBAR -->
 
-
+	
 
 	<!-- CONTENT -->
 	<section id="content">
@@ -90,10 +91,19 @@
 				<img src="images/people.png">
 			</a>
 		</nav>
-		
+		<?php if (session()->getFlashdata('success')): ?>
+    <div class="alert alert-success">
+        <?= session()->getFlashdata('success') ?>
+    </div>
+<?php endif; ?>
+<?php if (session()->getFlashdata('errors')): ?>
+    <div class="alert alert-danger">
+        <?= implode('<br>', session()->getFlashdata('errors')) ?>
+    </div>
+<?php endif; ?>
 		<?= $this->renderSection('dashboard_content') ?>
 	</section>
-	<!-- CONTENT -->
+
 	<script>
 		const allSideMenu = document.querySelectorAll('#sidebar .side-menu.top li a');
 
